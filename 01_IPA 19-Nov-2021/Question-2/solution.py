@@ -132,52 +132,55 @@
 # 0
 
 class Employee:
-    def __init__(self,employee_name,designation,salary,overTimeContribution):
-        self.employee_name = employee_name
-        self.designation = designation
+    def __init__(self, name, des, salary, Over):
+        self.name = name
+        self.des = des
         self.salary = salary
-        self.overTimeContribution = overTimeContribution
-        self.overTimeStatus = False
+        self.Over = Over
+        self.status = False
 
-class Organization(Employee):
-    def __init__(self,employee_list):
-        self.employee_list = employee_list
+class Organisation:
+    def __init__(self, l):
+        self.l = l
+        self.list = []
 
-    def isEligibleForBonus(self,overTimeThreshold):
-        for obj in self.employee_list:
-            totalOverTimeHours = 0
-            for k,v in obj.overTimeContribution.items():
-                totalOverTimeHours = totalOverTimeHours + v
-                if totalOverTimeHours >= overTimeThreshold:
-                    obj.overTimeStatus = True
+    def check(self, ts):
+        self.ts = ts
+        for i in self.l:
+            c = 0
+            for k, v in i.Over.items():
+                c += v
+            if c >= ts:
+                i.status = True
+                self.list.append(c)
+                print(i.name, i.status)
+            else:
+                print(i.name, i.status)
 
-    def totalBonusToBePaid(self,ratePerHour):
-        total = 0
-        for obj in self.employee_list:
-            if obj.overTimeStatus:
-                for k,v in obj.overTimeContribution.items():
-                    total = total + v*ratePerHour
-        return total
+    def output(self, rate):
+        self.rate = rate
+        t = sum(self.list) * rate
+        print(t)
 
-n = int(input())
-obj_list = []
-for _ in range(n):
-    employee_name = input()
-    designation = input()
-    salary = int(input())
-    overTimeContribution = {}
-    for _ in range(int(input())):
-        key = input()
-        value = int(input())
-        overTimeContribution[key] = value
-    obj_list.append(Employee(employee_name,designation,salary,overTimeContribution))
 
-org_obj = Organization(obj_list)
-overTimeThreshold = int(input())
-ratePerHour = int(input())
+l = []
+z = int(input("Enter the number of employees: "))
+for _ in range(z):
+    name = input("Enter employee name: ")
+    des = input("Enter employee designation: ")
+    salary = int(input("Enter employee salary: "))
+    n = int(input("Enter the number of months: "))
+    Over = {}
+    for _ in range(n):
+        month = input("Enter month: ")
+        val = int(input("Enter overtime hours: "))
+        Over[month] = val
+    l.append(Employee(name, des, salary, Over))
 
-org_obj.isEligibleForBonus(overTimeThreshold)
-totalBonus = org_obj.totalBonusToBePaid(ratePerHour)
-for i in obj_list:
-    print(i.employee_name,i.overTimeStatus,sep=" ")
-print(totalBonus)
+o = Organisation(l)
+ts = int(input("Enter the overtime threshold: "))
+rate = int(input("Enter the overtime rate: "))
+
+o.check(ts)
+o.output(rate)
+
